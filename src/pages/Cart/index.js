@@ -9,17 +9,17 @@ import {
 import { Container, ProductTable, Total } from "./styles";
 import { bindActionCreators } from "redux";
 
-import * as CartActions from '../../store/modules/cart/actions';
+import * as CartActions from "../../store/modules/cart/actions";
 
-import {formatPrice} from '../../util/format';
+import { formatPrice } from "../../util/format";
 
-function Cart({ cart, total, removeFromCart, updateAmount }) {
-  function increment(product)  {
-    updateAmount(product.id, product.amount + 1);
+function Cart({ cart, total, removeFromCart, updateAmountRequest }) {
+  function increment(product) {
+    updateAmountRequest(product.id, product.amount + 1);
   }
 
-  function decrement(product)  {
-    updateAmount(product.id, product.amount - 1);
+  function decrement(product) {
+    updateAmountRequest(product.id, product.amount - 1);
   }
 
   return (
@@ -58,10 +58,9 @@ function Cart({ cart, total, removeFromCart, updateAmount }) {
                 <strong>{product.subtotal}</strong>
               </td>
               <td>
-                <button 
-                  type="button" 
-                  onClick={() => removeFromCart(product.id)
-                  }
+                <button
+                  type="button"
+                  onClick={() => removeFromCart(product.id)}
                 >
                   <MdDelete size={20} color="#7159c1" />
                 </button>
@@ -83,16 +82,18 @@ function Cart({ cart, total, removeFromCart, updateAmount }) {
 }
 
 const mapStateToProps = (state) => ({
-  cart: state.cart.map(product => ({
+  cart: state.cart.map((product) => ({
     ...product,
     subtotal: formatPrice(product.amount * product.price),
   })),
-  total: formatPrice(state.cart.reduce((t, product) => { 
-    return t + product.amount * product.price
-  }, 0)),
+  total: formatPrice(
+    state.cart.reduce((t, product) => {
+      return t + product.amount * product.price;
+    }, 0)
+  ),
 });
 
 const mapDispathToProps = (dispatch) =>
-  bindActionCreators(CartActions,dispatch)
+  bindActionCreators(CartActions, dispatch);
 
 export default connect(mapStateToProps, mapDispathToProps)(Cart);
